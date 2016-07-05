@@ -1,7 +1,11 @@
 import subprocess
 import os
+import establishdevices
 
-##will probably be useful later: #sudo lshw -class disk -short (possibly >> outputfile.txt depending on use needed)
+establishdevices #calls a program that will determine the number of drives
+#creates the list of disks as a string in the file devicelist.txt
+
+
 ##it is possible that a bug includes  having a first line filled with zeros counting as a false positive.
 
 isClean = False #variable checking that the drive has been zeroed
@@ -18,19 +22,6 @@ def readzero (isClean):#function that checks the output file for zeroing the dri
             print "not all sectors were zeroed"
             return False
 
-#def readcheck (isGood):#function that checks the output of the file for reading the 0's
-#    f=open("octaldump.txt")
-#    stability = 0
-#    chars = set('123456789')
-#    for line in f:
-#        if any((c in chars) for c in line):#counts the number of lines that contain any of the values 1-9 we predict one instance on the bottom line of the file.
-#            stability = stability +1
-#            print "stability: "
-#            print stability
-#    if stability > 1:
-#        return False
-#    else:
-#        return True
 
 def readcheck(isGood):
     f=open("octaldump.txt")
