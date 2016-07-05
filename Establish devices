@@ -1,0 +1,21 @@
+#Establish devices
+import os
+os.system("sudo lshw -class disk -short > AttachedDevices.txt ")
+
+
+listofdrives = []
+
+def FindDrives(listofdrives):
+    
+    print "FindDrives gets called"
+    with open("AttachedDevices.txt") as f:
+        for line in f:
+            if "/dev/sd" in line:
+                listofdrives.append(line[24])
+                print line[17:25]#this line gives us all of the drives such as: /dev/sda /dev/sdb
+
+
+FindDrives(listofdrives)
+print "Total number of drives found: ",len(listofdrives)
+print listofdrives
+#####lshw doesn't list unformatted (or possibly bad?) drives. so the answer could be lsblk or ls -ltr /dev/sd*
