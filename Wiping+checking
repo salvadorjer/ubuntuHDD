@@ -36,6 +36,15 @@ def readcheck(isGood):
 
 #send command
 os.system("clear")
+print "removing old files"
+list = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+print list
+i=0
+while i <=25:
+    cleanup = "rm -f  octaldump%s.txt outputfile%s.txt blksize%s.txt devicelist.txt AttachedDevices.txt" %(list[i])
+    os.system(cleanup)
+    i=i+1
+
 
 cleanup = "rm -f octaldump.txt outputfile.txt blksize.txt"
 command = "lsblk" #we can add " | tee outputfile.txt" to send info to file.  -a will append
