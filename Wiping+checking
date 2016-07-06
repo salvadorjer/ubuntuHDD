@@ -38,10 +38,10 @@ def readcheck(isGood):
 os.system("clear")
 print "removing old files"
 list = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-print list
 i=0
-while i <=25:
-    cleanup = "rm -f  octaldump%s.txt outputfile%s.txt blksize%s.txt devicelist.txt AttachedDevices.txt" %(list[i])
+os.system("rm -f devicelist.txt AttachedDevices.txt")
+while i <=25:#removes all files
+    cleanup = "rm -f  octaldump%s.txt outputfile%s.txt blksize%s.txt" %(list[i],list[i],list[i])
     os.system(cleanup)
     i=i+1
 
@@ -54,6 +54,16 @@ getblksize = "sudo blockdev --getbsz /dev/sdb >> blksize.txt"
 
 os.system(cleanup)#gets rid of old files
 os.system(command)#lists all drives and partitions
+#lsblk obsolete now (although faster than lshw)
+
+#determine number of drives to be run
+
+#make list out of devicelist.txt
+
+#drivecounter = 1 (to avoid working on drive 0 that contains the os)
+
+#loop for sdb(aka list[1]) then sbc then sbd etc until end of list
+
 os.system(getblksize)#get the block size for the given drive and store it in a text file
 f=open("blksize.txt")
 for line in f:
