@@ -54,9 +54,19 @@ def wiping(currentDrive):
         bsize=line
     zero="sudo dd if=/dev/zero of=/dev/sd%s 2> outputfile%s.txt bs=%s"% (currentDrive, currentDrive, line)#puts the block size in the zeroing
     os.system(zero)
+    ##most recent modification
+    
+    zeroingoutput=open("outputfile%s.txt"%(currentDrive))
+    for check in zeroingoutput:
+        if "No space left on device" in check:
+            print "/dev/sd%s is filled with zeros"%(currentDrive)
     checkwipe = "sudo od /dev/sd%s >> octaldump%s.txt | head"%(currentDrive,currentDrive)
     os.system(checkwipe)#dumps the data into a file which we can then see if we find any non-zeo values
 #octaldump may require further testing (unsure if terminal and file output are behaving differently)
+    octaloutput=open("octaldump%s.txt"%(currentDrive))
+    for check in octaloutput:
+        if "0000000 000000 000000 000000 000000 000000 000000 000000 000000" in check:
+            print"/dev/sd%s is fully sanitized and good to go"%(currentDrive)
 
 
 
