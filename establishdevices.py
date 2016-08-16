@@ -17,6 +17,11 @@ def FindDrives(listofdrives):
                 print line[17:25]#this line gives us all of the drives such as: /dev/sda /dev/sdb
                 #f2.write(line[23])#puts all found devices in devicelist.txt
                 #####IMPORTANT do not run the first in the list for the wiping process, that is the host of the OS
+                serialcommand = "serial%s.txt"%(line[24])
+                serialcreate="touch serial%s.txt"%(line[24])#for some reason this seems to be the best way to create the files
+                os.system(serialcreate)
+                serialfile=open(serialcommand,"r+b")
+                serialfile.write(line[50:70])#gets the serial numbers from the drives and writes them to the appropriate serial file
 
 FindDrives(listofdrives)
 
