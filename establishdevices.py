@@ -13,15 +13,30 @@ def FindDrives(listofdrives):
     with open("AttachedDevices.txt") as f:
         for line in f:
             if "/dev/sd" in line:
-                listofdrives.append(line[29])#need line [24] USB devices as the empty spaces before /dev in the files are different line [23] for desktop and [29] for server
+                driveIdentity=line.index("/sd")+3
+                print driveIdentity
+                listofdrives.append(line[driveIdentity])#need line [24] USB devices as the empty spaces before /dev in the files are different line [23] for desktop and [29] for server
                 print line[22:30]#this line gives us all of the drives such as: /dev/sda /dev/sdb
                 #f2.write(line[23])#puts all found devices in devicelist.txt
                 #####IMPORTANT do not run the first in the list for the wiping process, that is the host of the OS
-                serialcommand = "serial%s.txt"%(line[29])
-                serialcreate="touch serial%s.txt"%(line[29])#for some reason this seems to be the best way to create the files
+                serialcommand = "serial%s.txt"%(line[driveIdentity])
+                serialcreate="touch serial%s.txt"%(line[driveIdentity])#for some reason this seems to be the best way to create the files
+                driveSerial=line.index("GB")+3
                 os.system(serialcreate)
                 serialfile=open(serialcommand,"r+b")
-                serialfile.write(line[50:70])#gets the serial numbers from the drives and writes them to the appropriate serial file
+                serialfile.write(line[driveSerial:driveSerial+20])#gets the serial numbers from the drives and writes them to the appropriate serial file
+                sizecommand="size%s.txt"%(line[driveIdentity])
+                sizecreate="touch size%s.txt"%(line[driveIdentity])
+                driveSize=line.index("GB")-4#this section creates sizea.txt files that contain the size of the drive with no whitespaces
+                os.system(sizecreate)
+                sizefile=open(sizecommand,"r+b")
+                tempsize=line[driveSize:driveSize+4]
+                tempsize=tempsize.lstrip(" ")
+                print tempsize
+                sizefile.write(tempsize)
+                
+                    
+         
 
 FindDrives(listofdrives)
 

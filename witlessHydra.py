@@ -10,7 +10,7 @@ list = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r",
 i=0
 os.system("rm -f devicelist.txt AttachedDevices.txt")
 while i <=25:#removes all files
-    cleanup = "rm -f  octaldump%s.txt outputfile%s.txt blksize%s.txt serial%s.txt" %(list[i],list[i],list[i],list[i])
+    cleanup = "rm -f  octaldump%s.txt size%s.txt outputfile%s.txt blksize%s.txt serial%s.txt" %(list[i],list[i],list[i],list[i],list[i])
     os.system(cleanup)
     i=i+1
 
@@ -52,11 +52,9 @@ def wiping(currentDrive):
     currentblk="blksize%s.txt"%(currentDrive)
     f=open(currentblk)
     for line in f:
-        bsize=line
-    zero="sudo dd if=/dev/zero of=/dev/sd%s 2> outputfile%s.txt bs=%s"% (currentDrive, currentDrive, line)#puts the block size in the zeroing
-    os.system(zero)
-    ##most recent modification
-    
+        bsize=line#change to =line for orginal programming but switching to 64k for testing purposes
+    zero="sudo dd if=/dev/zero of=/dev/sd%s 2> outputfile%s.txt bs=%s"% (currentDrive, currentDrive, bsize)#puts the block size in the zeroing
+    os.system(zero) 
     zeroingoutput=open("outputfile%s.txt"%(currentDrive))
     for check in zeroingoutput:
         if "No space left on device" in check:
@@ -68,6 +66,21 @@ def wiping(currentDrive):
     for check in octaloutput:
         if "0000000 000000 000000 000000 000000 000000 000000 000000 000000" in check:
             print"/dev/sd%s is fully sanitized and good to go"%(currentDrive)
+            makelabel="sudo parted /dev/sd%s mklabel msdos"%(currentDrive)
+            os.system(makelabel)
+            currentsize="size%s.txt"%(currentDrive)
+            f=open(currentsize)#gets the size (in GB's) of the drive
+            for line in f:
+                partsize=line
+            makepartition="sudo parted /dev/sd%s mkpart primary ntfs 0G %sG"%(currentDrive, partsize)
+            os.system(makepartition)#determines the size of the partition being created (should occupy full space)
+            unmountdrive="sudo umount /dev/sd%s1"%(currentDrive)
+            os.system(unmountdrive)
+            probesystem="sudo partprobe /dev/sd%s"%(currentDrive)
+            os.system(probesystem)
+            makeformat=("sudo mkfs.ntfs -f /dev/sd%s1")%(currentDrive)
+            os.system(makeformat)#needs to be rebooted between makepartition and makeformat
+            print"drive formatted"
 
 
 
